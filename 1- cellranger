@@ -1,0 +1,42 @@
+#1- download cellranger
+#wget required to download the software
+# after -O the downloaded filename 
+wget -O cellranger-8.0.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-8.0.0.tar.gz?Expires=1711717773&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=nuUkD6SRZCyunBSbdsvlj2zK4MGeRwmD7kCLgvBxvdOFbox37Swyc94V6qW0ByQ~pcotoZhd29DhcPrrf8AYq00ymct2JUz-a~NEVTwi-kQU0nFawThG69e6dm9pnMUNBZhFrbCgbdoHC162~-dRh7FVVhzx3ORMaDtXYO4~NBpqJ15KPspPyJgObh4TMXl27vYV9OotNU6RV6DSuZLkHTtatb8Q-NB6KNO9rXHaFxfhZRNzFmL0EYnEycMR4UHKFL-YyTcp4M2wBOQtbnGTdKJ5GbIcxHnzZn9jVYy~hWSWOEeRKdTwLGcvY8Y4YyoBynfX3cF-b41ldY0SydrPjA__"
+
+# 2- download the reference
+# For human
+wget "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2024-A.tar.gz"
+
+# for mouse
+curl -O "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCm39-2024-A.tar.gz"
+
+# 3- decompress files
+# -xf mean that extract and then put the file name
+# tar -czf to compress the file
+tar -xf  cellranger-8.0.0.tar.gz
+tar -xf (reference genome)
+rm *.gz
+
+
+# if the sample files are not fastq files
+run cellranger mkfastq or bcl-convert or bcl2fastq 
+
+# else
+# id A unique run ID string (e.g., sample345). The name is arbitrary and will be used to name the directory containing all pipeline-generated files and outputs.
+# Only letters, numbers, underscores, and hyphens are allowed (maximum of 64 characters).
+
+#  transcriptome Required. Path of folder containing 10x-compatible transcriptome reference.
+#sample Sample name as specified in the sample sheet supplied to the FASTQ generation software (cellranger mkfastq/ bcl2fastq / bcl-convert).
+
+cd /home/jdoe/runs
+cellranger count --id=sample345 \
+           --transcriptome=/opt/refdata-gex-GRCh38-2020-A \
+           --fastqs=/home/jdoe/runs/HAWT7ADXX/outs/fastq_path \
+           --sample=mysample \
+           --create-bam=true
+           --localcores=8 \
+           --localmem=64
+
+# many files will be extracted such as QC - 
+
+
