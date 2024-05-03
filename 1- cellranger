@@ -10,6 +10,12 @@ wget "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2024-A.tar.gz"
 # for mouse
 curl -O "https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCm39-2024-A.tar.gz"
 
+# For zebrafish
+------------------------------------------------------------
+-
+https://ftp.ensembl.org/pub/release-111/fasta/danio_rerio/dna/
+------------------------------------------------------------
+
 # 3- decompress files
 # -xf mean that extract and then put the file name
 # tar -czf to compress the file
