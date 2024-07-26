@@ -1,0 +1,50 @@
+library(Seurat)
+
+
+sample_names = c("151508")
+getwd()
+setwd(dir)
+dir = "F:/KODAMA/10x_DLPFC-20231216T144540Z-001/10x_DLPFC/151508"
+filename = "151508_filtered_feature_bc_matrix.h5"
+
+brain <- Load10X_Spatial(data.dir = dir, filename = filename)
+
+
+
+png("1.png")
+VlnPlot(brain, features = "nCount_Spatial", pt.size = 0.1) + NoLegend()
+dev.off()
+
+
+png("2.png")
+SpatialFeaturePlot(brain, features = "nCount_Spatial") + theme(legend.position = "right")
+dev.off()
+brain <- SCTransform(brain, assay = "Spatial", method = "poisson", verbose = TRUE)
+
+#If I donnot run SCtransform, I muuuuuuuussssssssssst run find highly variable features genes
+png("3.png")
+SpatialFeaturePlot(brain, features = c("SCGB2A2", "IGKC"))
+dev.off()
+
+
+brain <- RunPCA(brain, assay = "SCT", verbose = FALSE)
+brain <- FindNeighbors(brain, reduction = "pca", dims = 1:30)
+brain <- FindClusters(brain, verbose = FALSE)
+brain <- RunUMAP(brain, reduction = "pca", dims = 1:30)
+
+
+FeaturePlot(brain, features = c("SCGB2A2"))
+
+Spatially aware dimensionality reduction 
+png("4.png")
+DimPlot(brain, reduction = "umap", label = TRUE)
+dev.off()
+png("5.png")
+SpatialDimPlot(brain, label = TRUE, label.size = 3)
+dev.off()
+de_markers <- FindMarkers(brain, ident.1 = 5, ident.2 = 6)
+brain <- FindSpatiallyVariableFeatures(brain, assay = "SCT", features = VariableFeatures(brain)[1:1000],
+                                       selection.method = "moransi")
+top.features <- head(SpatiallyVariableFeatures(brain, selection.method = "moransi"), 6)
+SpatialFeaturePlot(brain, features = top.features, ncol = 3, alpha = c(0.1, 1))
+SpatialFeaturePlot(object = brain, features = rownames(de_markers)[1:3], alpha = c(0.1, 1), ncol = 3)
